@@ -1,0 +1,11 @@
+{
+  "lambda": {
+    "role": "picasso-executor",
+    "name": "picasso",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "s2ia2zza6j",
+    "module": "bin/api"
+  }
+}

@@ -2,9 +2,13 @@
   "name": "picasso",
   "version": "1.0.0",
   "description": "Thermal printer with Raspberry Pi",
-  "main": "index.js",
+  "files": [
+    "bin"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "transpile": "babel src --out-dir bin",
+    "create": "npm run transpile && claudia create --region us-east-1 --profile claudia --api-module bin/api --name picasso --runtime nodejs8.10 --memory 320 --timeout 60",
+    "update": "npm run transpile && claudia update"
   },
   "repository": {
     "type": "git",
@@ -20,6 +24,18 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "claudia": "^5.1.0"
+    "claudia": "^5.1.0",
+    "eslint": "^5.1.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.278.1",
+    "claudia-api-builder": "^4.1.1",
+    "node-fetch": "^2.1.2",
+    "yql": "^1.0.2"
   }
 }
