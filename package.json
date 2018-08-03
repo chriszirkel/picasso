@@ -6,9 +6,10 @@
     "bin"
   ],
   "scripts": {
+    "eslint": "eslint src --fix",
     "transpile": "babel src --out-dir bin",
-    "create": "npm run transpile && claudia create --region us-east-1 --profile claudia --api-module bin/api --name picasso --runtime nodejs8.10 --memory 320 --timeout 60",
-    "update": "npm run transpile && claudia update"
+    "create": "npm run eslint && npm run transpile && claudia create --region us-east-1 --profile claudia --api-module bin/api --name picasso --runtime nodejs8.10 --memory 320 --timeout 60",
+    "update": "npm run eslint && npm run transpile && claudia update"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,10 @@
   "dependencies": {
     "aws-sdk": "^2.278.1",
     "claudia-api-builder": "^4.1.1",
+    "newsapi": "^2.2.2",
     "node-fetch": "^2.1.2",
+    "twit": "^2.2.11",
+    "twitter-node-client": "0.0.6",
     "yql": "^1.0.2"
   }
 }

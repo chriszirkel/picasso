@@ -1,26 +1,27 @@
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch'
+import YQL from 'yql'
 
 module.exports = {
-  getData: async function (params) {
-    console.log('Weather params: ', JSON.stringify(params, null, 2))
+    getData: async function (params) {
+        console.log('Weather params: ', JSON.stringify(params, null, 2))
 
-    let place = ''
+        // no params => no result
+        if (!params) return
 
-    if (params.city) { place = place + params.city + ',' }
-    if (params.zipCode) { place = place + params.zipCode + ',' }
-    if (params.countryCode) { place = place + params.countryCode }
+        const place = Object.values(params).join()
+        const query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + place + '") and u="c"'
+        const yql = new YQL(query)
 
-    const baseUrl = 'http://query.yahooapis.com/v1/public/yql'
-    const query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + place + '")'
-    const queryUrl = baseUrl + '?q=' + encodeURIComponent(query) + '&format=json'
-
-    console.log('Weather queryUrl: ', queryUrl)
-
-    const page = await fetch(queryUrl)
-    const result = await page.json()
-
-    console.log('Weather result: ', JSON.stringify(result, null, 2))
-
-    return result
-  }
+        return new Promise((resolve, reject) => {
+            yql.exec(function (err, data) {
+                if (err) {
+                    console.log('Weather error: ', JSON.stringify(err, null, 2))
+                    reject(err)
+                } else {
+                    console.log('Weather response: ', JSON.stringify(data, null, 2))
+                    resolve(data.query.results.channel)
+                }
+            })
+        })
+    }
 }
