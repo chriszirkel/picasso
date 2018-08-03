@@ -14,29 +14,7 @@ async function handler (request) {
     let params = request.queryStringParameters
 
     if (params === null) {
-        var dynamodbParams = {
-            Key: {
-                'serviceId': {
-                    S: serviceId
-                }
-            },
-            TableName: 'picasso-services'
-        }
-
-        console.log('DynamoDB params: ', JSON.stringify(dynamodbParams, null, 2))
-
-        dynamodb.getItem(dynamodbParams, function (err, data) {
-            if (err) {
-                console.log('DynamoDB error: ', JSON.stringify(err, null, 2), err.stack)
-            } else {
-                Object.keys(data.Item).reduce(function (pv, cv) {
-                    pv[cv] = data.Item[cv].S
-                    return pv
-                }, {})
-
-                console.log('DynamoDB result: ', JSON.stringify(data, null, 2))
-            }
-        })
+        params = await getDefaultParams(serviceId)
     }
 
     console.log('ServiceId: ', serviceId)
@@ -57,6 +35,32 @@ async function handler (request) {
         statusCode: 200,
         body: body
     }
+}
+
+async function getDefaultParams (serviceId) {
+    var dynamodbParams = {
+        Key: {
+            'serviceId': {
+                S: serviceId
+            }
+        },
+        TableName: 'picasso-services'
+    }
+
+    console.log('DynamoDB params: ', JSON.stringify(dynamodbParams, null, 2))
+
+    return new Promise((resolve, reject) => {
+        dynamodb.getItem(dynamodbParams, function (err, data) {
+            if (err) {
+                console.log('DynamoDB error: ', JSON.stringify(err, null, 2), err.stack)
+                reject(err)
+            } else {
+                console.log('DynamoDB result: ', JSON.stringify(data, null, 2))
+                const params = JSON.parse(data.Item.params.S)
+                resolve(params)
+            }
+        })
+    })
 }
 
 api.get('/weather', handler)

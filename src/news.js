@@ -7,10 +7,9 @@ module.exports = {
         // no params => no result
         if (!params) return
 
-        // source param cannot be mixed with country or category params
+        // source param cannot be mixed with country param
         if (params.sources) {
             params.country = ''
-            params.language = ''
         }
 
         const newsapi = new NewsAPI(process.env.newsapi_api_key)
@@ -20,7 +19,6 @@ module.exports = {
                 sources: params.sources,
                 q: params.q,
                 category: params.category,
-                language: params.language,
                 country: params.country,
                 pageSize: 5
             }).then(response => {

@@ -8,6 +8,14 @@ module.exports = {
         // no params => no result
         if (!params) return
 
+        /* default values
+        {
+            "zipCode": "55128",
+            "cityName": "Mainz",
+            "countryCode": "DE"
+        }
+        */
+
         const place = Object.values(params).join()
         const query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + place + '") and u="c"'
         const yql = new YQL(query)
